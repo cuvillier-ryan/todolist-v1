@@ -46,12 +46,6 @@ app.post("/", function(req, res) {
     items.push(item);
     res.redirect("/");
   }
-
-
-
-  items.push(item);
-
-  res.redirect("/");
 });
 
 app.get("/work", function(req, res){
