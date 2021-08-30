@@ -9,7 +9,6 @@ exports.getDate = function() {
     day: "numeric",
     month: "long"
   };
-
   return today.toLocaleDateString("en-US", options);
 };
 
@@ -20,6 +19,5 @@ exports.getDay = function() {
   const options = {
     weekday: "long"
   };
-
   return today.toLocaleDateString("en-US", options);
 };
