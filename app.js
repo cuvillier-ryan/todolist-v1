@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
+
 const app = express();
 
 
@@ -35,21 +36,21 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
-// Item.insertMany(defaultItems, function(err) {
-//   if (err) {
-//     console.log(err);
-//   } else {
-//     console.log("Inserted documents successfully");
-//   }
-// });
-
-Item.deleteMany(defaultItems, function(err) {
+Item.insertMany(defaultItems, function(err) {
   if (err) {
     console.log(err);
   } else {
-    console.log("Successfully deleted items");
+    console.log("Inserted documents successfully");
   }
 });
+
+// Item.deleteMany({defaultItems}, function(err) {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log("Successfully deleted items");
+//   }
+// });
 
 app.get("/", function(req, res) {
 
