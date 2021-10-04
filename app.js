@@ -36,13 +36,13 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
-Item.insertMany(defaultItems, function(err) {
-  if (err) {
-    console.log(err);
-  } else {
-    console.log("Inserted documents successfully");
-  }
-});
+// Item.insertMany(defaultItems, function(err) {
+//   if (err) {
+//     console.log(err);
+//   } else {
+//     console.log("Inserted documents successfully");
+//   }
+// });
 
 // Item.deleteMany({defaultItems}, function(err) {
 //   if (err) {
@@ -54,9 +54,15 @@ Item.insertMany(defaultItems, function(err) {
 
 app.get("/", function(req, res) {
 
-  res.render("list", {
-    listTitle: "Today",
-    newListItems: items
+  Item.find({}, function(err, results) {
+    if (err) {
+      console.log(err);
+    } else {
+      res.render("list", {
+        listTitle: "Today",
+        newListItems: results
+      });
+    }
   });
 });
 
