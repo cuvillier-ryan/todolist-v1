@@ -36,14 +36,6 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
-// Item.insertMany(defaultItems, function(err) {
-//   if (err) {
-//     console.log(err);
-//   } else {
-//     console.log("Inserted documents successfully");
-//   }
-// });
-
 // Item.deleteMany({defaultItems}, function(err) {
 //   if (err) {
 //     console.log(err);
@@ -55,8 +47,15 @@ const defaultItems = [item1, item2, item3];
 app.get("/", function(req, res) {
 
   Item.find({}, function(err, results) {
-    if (err) {
-      console.log(err);
+    if (results.length === 0) {
+      Item.insertMany(defaultItems, function(err) {
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Inserted documents successfully");
+        }
+      });
+      res.render("/");
     } else {
       res.render("list", {
         listTitle: "Today",
@@ -74,7 +73,7 @@ app.post("/", function(req, res) {
     workItems.push(item);
     res.redirect("/work");
   } else {
-    items.push(item);
+    results.push(item);
     res.redirect("/");
   }
 });
@@ -82,7 +81,7 @@ app.post("/", function(req, res) {
 app.get("/work", function(req, res) {
   res.render("list", {
     listTitle: "Work List",
-    newListItems: workItems
+    newListItems: results
   });
 });
 
