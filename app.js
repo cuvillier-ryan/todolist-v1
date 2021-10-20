@@ -70,9 +70,29 @@ app.get("/", function(req, res) {
   });
 });
 
-app.get("/:customListName", function(req, res){
+app.get("/:customListName", function(req, res) {
   const customListName = req.params.customListName;
 
+  List.findOne({
+    name: customListName
+  }, function(err, foundList) {
+    if (!err) {
+      if (!foundList) {
+        //Create a new list
+        const list = new List({
+          name: customListName,
+          items: defaultItems
+        });
+        list.save();
+        res.redirect("/" + customListName);
+      } else {
+        //Show an existing list
+        res.render("list",{
+          listTitle: foundList.name,
+          newListItems: foundList.items})
+      }
+    }
+  });
 });
 
 app.post("/", function(req, res) {
@@ -85,13 +105,13 @@ app.post("/", function(req, res) {
   res.redirect("/");
 });
 
-app.post("/delete", function(req, res){
+app.post("/delete", function(req, res) {
   const checkedItemId = req.body.checkbox;
 
   console.log(req.body);
 
-  Item.findByIdAndRemove(checkedItemId, function(err){
-    if(!err) {
+  Item.findByIdAndRemove(checkedItemId, function(err) {
+    if (!err) {
       console.log("Successfully deleted checked item.");
       res.redirect("/");
     }
