@@ -4,8 +4,6 @@ const mongoose = require("mongoose");
 
 const app = express();
 
-
-
 app.set('view engine', 'ejs');
 
 app.use(bodyParser.urlencoded({
@@ -36,6 +34,13 @@ const item3 = new Item({
 
 const defaultItems = [item1, item2, item3];
 
+const listSchema = {
+  name: String,
+  items: [itemsSchema]
+};
+
+const List = mongoose.model("List", listSchema);
+
 // Item.deleteMany({defaultItems}, function(err) {
 //   if (err) {
 //     console.log(err);
@@ -65,16 +70,32 @@ app.get("/", function(req, res) {
   });
 });
 
+app.get("/:customListName", function(req, res){
+  const customListName = req.params.customListName;
+
+});
+
 app.post("/", function(req, res) {
 
   const itemName = req.body.newItem;
-
   const item = new Item({
     name: itemName
   });
   item.save();
-
   res.redirect("/");
+});
+
+app.post("/delete", function(req, res){
+  const checkedItemId = req.body.checkbox;
+
+  console.log(req.body);
+
+  Item.findByIdAndRemove(checkedItemId, function(err){
+    if(!err) {
+      console.log("Successfully deleted checked item.");
+      res.redirect("/");
+    }
+  });
 });
 
 app.get("/work", function(req, res) {
