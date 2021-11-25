@@ -12,7 +12,7 @@ app.use(bodyParser.urlencoded({
 
 app.use(express.static("public"))
 
-mongoose.connect("mongodb://localhost:27017/todolistDB");
+mongoose.connect("mongodb://127.0.0.1:27017/todolistDB");
 
 const itemsSchema = {
   name: String
@@ -40,14 +40,6 @@ const listSchema = {
 };
 
 const List = mongoose.model("List", listSchema);
-
-// Item.deleteMany({defaultItems}, function(err) {
-//   if (err) {
-//     console.log(err);
-//   } else {
-//     console.log("Successfully deleted items");
-//   }
-// });
 
 app.get("/", function(req, res) {
 
@@ -87,9 +79,10 @@ app.get("/:customListName", function(req, res) {
         res.redirect("/" + customListName);
       } else {
         //Show an existing list
-        res.render("list",{
+        res.render("list", {
           listTitle: foundList.name,
-          newListItems: foundList.items})
+          newListItems: foundList.items
+        })
       }
     }
   });
@@ -98,11 +91,24 @@ app.get("/:customListName", function(req, res) {
 app.post("/", function(req, res) {
 
   const itemName = req.body.newItem;
+  const listName = req.body.list;
+
   const item = new Item({
     name: itemName
   });
-  item.save();
-  res.redirect("/");
+
+  if (listName === "Today") {
+    item.save();
+    res.redirect("/");
+  } else {
+    List.findOne({
+      name: listName
+    }, function(err, foundList) {
+      foundList.items.push(item);
+      foundList.save();
+      res.redirect("/" + listName);
+    });
+  }
 });
 
 app.post("/delete", function(req, res) {
@@ -116,19 +122,6 @@ app.post("/delete", function(req, res) {
       res.redirect("/");
     }
   });
-});
-
-app.get("/work", function(req, res) {
-  res.render("list", {
-    listTitle: "Work List",
-    newListItems: results
-  });
-});
-
-app.post("/work", function(req, res) {
-  const item = req.body.newItem;
-  workItems.push(item);
-  res.redirect("/work");
 });
 
 app.get("/about", function(req, res) {
